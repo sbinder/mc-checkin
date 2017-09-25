@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +7,13 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'app';
+  slist: object[];
+
+  constructor(elm: ElementRef) {
+    // this.slist = JSON.parse("{\"n\":\"Joe\"}");
+    // this.slist = JSON.parse("[{stid: 1, date: '20170108', name: 'Joe'}]");
+    this.slist = JSON.parse( elm.nativeElement.getAttribute('slist') );
+    // console.log(this.slist);
+  }
+
 }
