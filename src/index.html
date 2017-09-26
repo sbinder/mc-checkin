@@ -1,14 +1,55 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>McCheckin</title>
-  <base href="/">
+<!DOCTYPE html>
+    <html lang="en">
+        <head>
+          <meta charset="utf-8">
+          <base href="/">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <title>Student Checkin</title>
 </head>
 <body>
-  <app-root slist='[{"s":"1","d":"20170108","n":"John, Elton"},{"s":"2","d":"20170108","n":"Joel, Billy"},{"s":"3","d":"20170101","n":"Idol, Billy"}]'></app-root>
+    <app-root slist='[{"s":"1","d":"20170108","n":"John, Elton"},{"s":"2","d":"20170108","n":"Joel, Billy"},{"s":"3","d":"20170101","n":"Idol, Billy"}]'></app-root>
+
+    <div class="container">
+        <input type="text" id="message" />
+        <input type="button" id="sendmessage" value="Send" />
+        <input type="hidden" id="displayname" />
+        <ul id="discussion"></ul>
+    </div>
+
+  <script src="~/signalr/hubs"></script>
+    <!--Add script to update the page and send messages.-->
+    <script type="text/javascript">
+        $(function () {
+            // Declare a proxy to reference the hub.
+            var ClassHub = $.connection.classHub;
+            // Create a function that the hub can call to broadcast messages.
+            ClassHub.client.broadcastMessage = function (name, message) {
+                // Html encode display name and message.
+                var encodedName = $('<div />').text(name).html();
+                var encodedMsg = $('<div />').text(message).html();
+                // Add the message to the page.
+                $('#discussion').append('<li><strong>' + encodedName
+                    + '</strong>:&nbsp;&nbsp;' + encodedMsg + '</li>');
+            };
+            // Get the user name and store it to prepend to messages.
+            $('#displayname').val(prompt('Enter class name:', ''));
+            // Set initial focus to message input box.
+            $('#message').focus();
+            // Start the connection.
+            $.connection.hub.start().done(function () {
+                $('#sendmessage').click(function () {
+                    // Call the Send method on the hub.
+                    ClassHub.server.send($('#displayname').val(), $('#message').val());
+                    // Clear text box and reset focus for next comment.
+                    $('#message').val('').focus();
+                });
+            });
+        });
+    </script>
 </body>
 </html>
+
+

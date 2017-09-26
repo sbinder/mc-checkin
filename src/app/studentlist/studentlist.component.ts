@@ -31,6 +31,37 @@ export class StudentlistComponent implements OnInit {
     return d;
   }
 
+  gotClicked(id) {
+    switch (this.getStatus(id)) {
+      case 'present':
+      this.setStatus(id, '');
+      break;
+      case 'sent':
+        this.setStatus(id, 'present');
+      break;
+      default:
+      this.setStatus(id, 'sent');
+    }
+  }
+
+  getStatus(id): string {
+    let r = '';
+    this.slist.forEach(element => {
+      if (id === element.s) {
+        r = element.c;
+      }
+    });
+    return r;
+  }
+
+  setStatus(id, newstat) {
+    this.slist.forEach(element => {
+      if (id === element.s) {
+        element.c = newstat;
+      }
+    });
+  }
+
   sortslist() {
     this.slist.sort((a, b) => {
       if (a.d < b.d)

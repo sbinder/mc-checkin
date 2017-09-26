@@ -12,7 +12,7 @@ export class AppComponent {
   constructor(elm: ElementRef) {
     // this.slist = JSON.parse("{\"n\":\"Joe\"}");
     // this.slist = JSON.parse("[{stid: 1, date: '20170108', name: 'Joe'}]");
-    this.slist = JSON.parse( elm.nativeElement.getAttribute('slist') );
+    this.slist = JSON.parse( elm.nativeElement.getAttribute('slist').slice());
     // console.log(this.slist);
   }
 

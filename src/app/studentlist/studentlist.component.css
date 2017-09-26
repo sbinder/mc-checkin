@@ -1,6 +1,22 @@
-div.datemark {
-  float: left;
+div {
+  text-align: left;
+  padding:3px;
 }
-ul {
-  list-style: none;
+
+div.datemark {
+  background-color: yellow;
+}
+
+div.student {
+  padding: .5em 0 .5em 2em;
+  background-color: ghostwhite;
+  min-width: 20em;
+	display: inline-block;
+	margin: 2px;
+}
+div.student.sent {
+  background-color: blue;
+}
+div.student.present {
+  background-color: yellow;
 }

@@ -1,13 +1,11 @@
   <div>
-    <ng-template ngFor=""></ng-template>
-    <ng-template ng-if="checkDate(student.d)">
-
-    </ng-template>
-    <li *ngFor="let student of slist">
-      <div *ngIf="checkDate(student.d)" class="datemark">
-        {{getdate(student.d) | date:'MMM d, y'}}
-      </div>
-{{student.n}}
-    </li>
+      <ng-template ngFor let-student [ngForOf]="slist">
+          <div *ngIf="checkDate(student.d)" class="datemark">
+              {{getdate(student.d) | date:'MMM d, y'}}
+          </div>
+        <div [ngClass]="student.c + ' student'"
+          (click)="gotClicked(student.s)">{{student.n}}
+        </div>
+        </ng-template>
   </div>
 
