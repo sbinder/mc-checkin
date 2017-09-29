@@ -1,4 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { element } from 'protractor';
+
+declare var jquery: any;
+declare var $: any;
 
 @Component({
   selector: 'app-studentlist',
@@ -7,7 +11,9 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class StudentlistComponent implements OnInit {
 
-  constructor() { }
+  ClassHub: any;
+
+  constructor(private changeDetector: ChangeDetectorRef) { }
 
   lastdate: string;
 
@@ -16,6 +22,25 @@ export class StudentlistComponent implements OnInit {
 
   ngOnInit() {
     this.sortslist();
+    let my = this;
+    // Declare a proxy to reference the hub.
+    this.ClassHub = $.connection.classHub;
+    // Create a function that the hub can call to broadcast messages.
+    this.ClassHub.client.broadcastMessage = function (channel, stid, status) {
+      // Html encode display name and message.
+      // console.log('Received:', channel, stid, status);
+      if (status) {
+        my.setStatus(stid, 'present');
+      } else {
+        my.setStatus(stid, '');
+      }
+      my.changeDetector.detectChanges();
+    };
+    $.connection.hub.start();
+  }
+
+  sendMessage(stid: number, status: boolean) {
+    this.ClassHub.server.send('123', stid, status);
   }
 
   checkDate(newdate) {
@@ -27,21 +52,21 @@ export class StudentlistComponent implements OnInit {
   }
 
   getdate(ds: string) {
-    const d = new Date(+ds.substr(0,4), +ds.substr(4,2), +ds.substr(6));
+    const d = new Date(+ds.substr(0, 4), +ds.substr(4, 2), +ds.substr(6));
     return d;
   }
 
   gotClicked(id) {
     switch (this.getStatus(id)) {
       case 'present':
-      this.setStatus(id, '');
-      break;
-      case 'sent':
-        this.setStatus(id, 'present');
-      break;
+        // check student out!
+        // this.setStatus(id, '');
+        this.sendMessage(id, false);
+        break;
       default:
-      this.setStatus(id, 'sent');
-    }
+        this.setStatus(id, 'sent');
+        this.sendMessage(id, true);
+      }
   }
 
   getStatus(id): string {
@@ -55,26 +80,23 @@ export class StudentlistComponent implements OnInit {
   }
 
   setStatus(id, newstat) {
-    this.slist.forEach(element => {
+    this.slist.forEach((element, i) => {
       if (id === element.s) {
         element.c = newstat;
+        // console.log(this.slist);
       }
     });
   }
 
   sortslist() {
     this.slist.sort((a, b) => {
-      if (a.d < b.d)
-      {
+      if (a.d < b.d) {
         return -1;
-      } else if (a.d > b.d)
-      {
+      } else if (a.d > b.d) {
         return 1;
-      } else if (a.n < b.n)
-      {
+      } else if (a.n < b.n) {
         return -1;
-      } else if (a.n > b.n)
-      {
+      } else if (a.n > b.n) {
         return 1;
       } else { return 0; }
 
