@@ -27,8 +27,6 @@ export class StudentlistComponent implements OnInit {
     this.ClassHub = $.connection.classHub;
     // Create a function that the hub can call to broadcast messages.
     this.ClassHub.client.broadcastMessage = function (channel, stid, status) {
-      // Html encode display name and message.
-      // console.log('Received:', channel, stid, status);
       if (status) {
         my.setStatus(stid, 'present');
       } else {
@@ -59,8 +57,7 @@ export class StudentlistComponent implements OnInit {
   gotClicked(id) {
     switch (this.getStatus(id)) {
       case 'present':
-        // check student out!
-        // this.setStatus(id, '');
+         this.setStatus(id, '');  // preemptively
         this.sendMessage(id, false);
         break;
       default:
