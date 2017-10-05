@@ -23,10 +23,11 @@ export class StudentlistComponent implements OnInit {
   ngOnInit() {
     this.sortslist();
     let my = this;
+    $.connection.hub.url = 'http://localhost:55199/signalr'; // TESTING ONLY
     // Declare a proxy to reference the hub.
     this.ClassHub = $.connection.classHub;
     // Create a function that the hub can call to broadcast messages.
-    this.ClassHub.client.broadcastMessage = function (channel, stid, status) {
+    this.ClassHub.client.broadcastCheckin = function (stid, status) {
       if (status) {
         my.setStatus(stid, 'present');
       } else {
@@ -34,11 +35,14 @@ export class StudentlistComponent implements OnInit {
       }
       my.changeDetector.detectChanges();
     };
-    $.connection.hub.start();
-  }
+    $.connection.hub.start()
+    .done(() => {
+      my.ClassHub.server.joinGroup(1);
+    });
+}
 
   sendMessage(stid: number, status: boolean) {
-    this.ClassHub.server.send('123', stid, status);
+    this.ClassHub.server.checkin(1, stid, status);
   }
 
   checkDate(newdate) {
