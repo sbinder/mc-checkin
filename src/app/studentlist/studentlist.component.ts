@@ -40,10 +40,11 @@ export class StudentlistComponent implements OnInit {
       my.ClassHub.server.joinGroup(1);
     });
     // set up initial display
-    console.log(this.slist);
+    let pcount = 0;
     this.slist.forEach(element => {
       if (element.p) {
         element.c = 'present';
+        pcount ++;
       }
     });
 }
