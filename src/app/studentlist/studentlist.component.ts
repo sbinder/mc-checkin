@@ -39,6 +39,13 @@ export class StudentlistComponent implements OnInit {
     .done(() => {
       my.ClassHub.server.joinGroup(1);
     });
+    // set up initial display
+    console.log(this.slist);
+    this.slist.forEach(element => {
+      if (element.p) {
+        element.c = 'present';
+      }
+    });
 }
 
   sendMessage(stid: number, status: boolean) {
