@@ -62,7 +62,8 @@ export class StudentlistComponent implements OnInit {
   }
 
   getdate(ds: string) {
-    const d = new Date(+ds.substr(0, 4), +ds.substr(4, 2), +ds.substr(6));
+    // console.log('date from server', ds);
+    const d = new Date(+ds.substr(0, 4), +ds.substr(4, 2) - 1, +ds.substr(6));
     return d;
   }
 
